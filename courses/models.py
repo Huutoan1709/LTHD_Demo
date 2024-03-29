@@ -13,6 +13,7 @@ class BaseModel(models.Model):
     update_date = models.DateField(auto_now=True,null= True)
     active = models.BooleanField(default=True)
 
+
 class Category(BaseModel):
     name = models.CharField(max_length=50, null= False)
 
@@ -27,6 +28,8 @@ class ItemBase(models.Model):
 
     def __str__(self):
         return self.subject
+
+
 class Course(BaseModel,ItemBase):
 
     class Meta:
@@ -38,11 +41,12 @@ class Course(BaseModel,ItemBase):
 
 class Lesson(BaseModel,ItemBase):
     class Meta:
-        unique_together = ('subject','course')
+        unique_together = ('subject', 'course')
     content = RichTextField()
     image = models.ImageField(upload_to='lessons/%Y/%m')
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     tag = models.ManyToManyField('Tag')
+
 
 class Tag(BaseModel):
     name = models.CharField(max_length=50, unique=True)

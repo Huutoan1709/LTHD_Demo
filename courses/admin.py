@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.template.response import TemplateResponse
-
 from .models import Category, Course, Lesson, Tag
 from django.utils.html import mark_safe
 from django import forms
@@ -64,14 +63,12 @@ class CourseAppAdminSite(admin.AdminSite):
 
     def get_urls(self):
         return [
-            path('/course-stats/', self.course_stats)
+            path('course-stats/', self.course_stats)
         ] + super().get_urls()
 
 
     def course_stats(self, request):
-
         course_count = Course.objects.count()
-
         return TemplateResponse(request, 'admin/course-stats.html', {
             'course_count': course_count
         })
