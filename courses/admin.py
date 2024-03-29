@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db.models import Count
 from django.template.response import TemplateResponse
 from .models import Category, Course, Lesson, Tag
 from django.utils.html import mark_safe
@@ -8,7 +9,6 @@ from django.urls import path
 
 
 class CategoryAdmin(admin.ModelAdmin):
-
     list_display = ['pk', 'name']
     search_fields = ['name']
     list_filter = ['id', 'name']
@@ -23,19 +23,16 @@ class LessonInlineAdmin(admin.StackedInline):
     pk_name = 'course'
 
 
-
-
 class CourseAdmin(admin.ModelAdmin):
     class Media:
         css = {
-            'all':('/static/CSS/main.css',)
+            'all': ('/static/CSS/main.css',)
         }
 
     inlines = (LessonInlineAdmin,)
     list_display = ['pk', 'subject', 'description']
     search_fields = ['subject']
     readonly_fields = ['img']
-
 
     def img(self, course):
         if course:
@@ -51,8 +48,9 @@ class LessonForm(forms.ModelForm):
         model = Lesson
         fields = '__all__'
 
+
 class LessonAdmin(admin.ModelAdmin):
-    list_display =['id', 'subject', 'create_date', 'active']
+    list_display = ['id', 'subject', 'create_date', 'active']
     form = LessonForm
 
     inlines = (LessonTagInline,)
@@ -66,20 +64,20 @@ class CourseAppAdminSite(admin.AdminSite):
             path('course-stats/', self.course_stats)
         ] + super().get_urls()
 
-
+    # Phân Trang course_stats trả về số lượng khóa học báo cáo
     def course_stats(self, request):
         course_count = Course.objects.count()
+        # Đếm trong mỗi Courses có bao nhiêu lesson thông qua hàm(lesson_count)
+        stats = Course.objects.annotate(lesson_count=Count('lessons')).values("id", "subject", "lesson_count")
         return TemplateResponse(request, 'admin/course-stats.html', {
-            'course_count': course_count
+            'course_count': course_count,
+            'stats': stats
         })
 
 
 admin_site = CourseAppAdminSite('mycourse')
 
-
 admin_site.register(Category, CategoryAdmin)
 admin_site.register(Course, CourseAdmin)
 admin_site.register(Lesson, LessonAdmin)
 admin_site.register(Tag)
-
-
