@@ -4,7 +4,7 @@ from ckeditor.fields import RichTextField
 
 
 class User(AbstractUser):
-    pass
+    avatar = models.ImageField(upload_to='upload/%Y/%m', null= True)
 
 
 class BaseModel(models.Model):
@@ -38,7 +38,7 @@ class Course(BaseModel, ItemBase):
         unique_together = ('subject', 'category')
 
     description = models.CharField(max_length=255)
-    image = models.ImageField(upload_to='courses/%Y/%m')
+    image = models.ImageField(upload_to='courses/%Y/%m', null=True)
     category = models.ForeignKey(Category, on_delete=models.RESTRICT)
     tag = models.ManyToManyField('Tag')
 
@@ -48,7 +48,7 @@ class Lesson(BaseModel, ItemBase):
         unique_together = ('subject', 'course')
 
     content = RichTextField()
-    image = models.ImageField(upload_to='lessons/%Y/%m')
+    image = models.ImageField(upload_to='lessons/%Y/%m',null=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="lessons")
     tag = models.ManyToManyField('Tag', related_name="lessons", blank=True)
 

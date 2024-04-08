@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'courses.apps.CoursesConfig',
     'ckeditor',
     'ckeditor_uploader',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -131,3 +132,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATIC_URL = '/static/'
 MEDIA_ROOT = '%s/courses/static/' % BASE_DIR
 CKEDITOR_UPLOAD_PATH = 'lessons/'
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': '2'
+}
